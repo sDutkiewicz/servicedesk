@@ -13,13 +13,10 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/api/**")
-                        .allowedOrigins(
-                                "http://localhost:4000",
-                                "http://localhost:8080",
-                                "https://<twoj-login>.github.io"  // PODMIEŃ na swój adres GitHub Pages
-                        )
+                        .allowedOriginPatterns("*")  // Pozwala na file:// i localhost
                         .allowedMethods("GET","POST","PUT","DELETE","PATCH","OPTIONS")
-                        .allowedHeaders("*");
+                        .allowedHeaders("*")
+                        .allowCredentials(true);
             }
         };
     }

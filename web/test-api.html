@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test API - ServiceDesk</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .endpoint {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .endpoint h3 {
+            margin: 0 0 10px 0;
+            color: #2c3e50;
+        }
+        .url {
+            color: #27ae60;
+            font-family: monospace;
+            background: #ecf0f1;
+            padding: 5px 10px;
+            border-radius: 4px;
+            display: inline-block;
+            margin: 5px 0;
+        }
+        button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 5px 5px 5px 0;
+        }
+        button:hover {
+            background: #2980b9;
+        }
+        .result {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            display: none;
+        }
+        .result.show {
+            display: block;
+        }
+        .status {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .status.success {
+            background: #27ae60;
+            color: white;
+        }
+        .status.error {
+            background: #e74c3c;
+            color: white;
+        }
+        .status.loading {
+            background: #f39c12;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 ServiceDesk API - Tester</h1>
+    <p style="text-align: center; color: #7f8c8d;">Kliknij przycisk aby przetestować endpoint API</p>
+
+    <div class="endpoint">
+        <h3>1. Status API <span class="status" id="status-hello">Nie testowano</span></h3>
+        <div class="url">GET /api/hello</div>
+        <button onclick="testEndpoint('hello', '/api/hello')">Testuj</button>
+        <div class="result" id="result-hello"></div>
+    </div>
+
+    <div class="endpoint">
+        <h3>2. Wszystkie departamenty <span class="status" id="status-departments">Nie testowano</span></h3>
+        <div class="url">GET /api/departments</div>
+        <button onclick="testEndpoint('departments', '/api/departments')">Testuj</button>
+        <div class="result" id="result-departments"></div>
+    </div>
+
+    <div class="endpoint">
+        <h3>3. Wszystkie kategorie <span class="status" id="status-categories">Nie testowano</span></h3>
+        <div class="url">GET /api/categories</div>
+        <button onclick="testEndpoint('categories', '/api/categories')">Testuj</button>
+        <div class="result" id="result-categories"></div>
+    </div>
+
+    <div class="endpoint">
+        <h3>4. Wszyscy technicy <span class="status" id="status-technicians">Nie testowano</span></h3>
+        <div class="url">GET /api/technicians</div>
+        <button onclick="testEndpoint('technicians', '/api/technicians')">Testuj</button>
+        <div class="result" id="result-technicians"></div>
+    </div>
+
+    <div class="endpoint">
+        <h3>5. Wszystkie zgłoszenia <span class="status" id="status-tickets">Nie testowano</span></h3>
+        <div class="url">GET /api/tickets</div>
+        <button onclick="testEndpoint('tickets', '/api/tickets')">Testuj</button>
+        <div class="result" id="result-tickets"></div>
+    </div>
+
+    <div class="endpoint">
+        <h3>6. Raport zgłoszeń <span class="status" id="status-report">Nie testowano</span></h3>
+        <div class="url">GET /api/reports/tickets</div>
+        <button onclick="testEndpoint('report', '/api/reports/tickets')">Testuj</button>
+        <div class="result" id="result-report"></div>
+    </div>
+
+    <div class="endpoint">
+        <h3>7. Testuj wszystkie endpointy</h3>
+        <button onclick="testAllEndpoints()" style="background: #e67e22;">Testuj wszystko</button>
+    </div>
+
+    <script>
+        const BASE_URL = 'http://localhost:8080';
+
+        async function testEndpoint(name, endpoint) {
+            const resultDiv = document.getElementById('result-' + name);
+            const statusSpan = document.getElementById('status-' + name);
+
+            statusSpan.textContent = 'Ładowanie...';
+            statusSpan.className = 'status loading';
+            resultDiv.classList.add('show');
+            resultDiv.textContent = 'Wysyłanie żądania do ' + BASE_URL + endpoint + '...\n\n';
+
+            try {
+                const startTime = performance.now();
+                const response = await fetch(BASE_URL + endpoint);
+                const endTime = performance.now();
+                const data = await response.json();
+
+                const duration = (endTime - startTime).toFixed(2);
+
+                if (response.ok) {
+                    statusSpan.textContent = 'OK (' + response.status + ') - ' + duration + 'ms';
+                    statusSpan.className = 'status success';
+                    resultDiv.textContent = '✅ Sukces!\n\n';
+                    resultDiv.textContent += 'Status: ' + response.status + ' ' + response.statusText + '\n';
+                    resultDiv.textContent += 'Czas odpowiedzi: ' + duration + 'ms\n';
+                    resultDiv.textContent += 'Liczba rekordów: ' + (Array.isArray(data) ? data.length : 'N/A') + '\n\n';
+                    resultDiv.textContent += 'Odpowiedź:\n';
+                    resultDiv.textContent += JSON.stringify(data, null, 2);
+                } else {
+                    statusSpan.textContent = 'Błąd (' + response.status + ')';
+                    statusSpan.className = 'status error';
+                    resultDiv.textContent = '❌ Błąd!\n\n';
+                    resultDiv.textContent += 'Status: ' + response.status + ' ' + response.statusText + '\n\n';
+                    resultDiv.textContent += JSON.stringify(data, null, 2);
+                }
+            } catch (error) {
+                statusSpan.textContent = 'Błąd połączenia';
+                statusSpan.className = 'status error';
+                resultDiv.textContent = '❌ Błąd połączenia!\n\n';
+                resultDiv.textContent += 'Szczegóły: ' + error.message + '\n\n';
+                resultDiv.textContent += 'Upewnij się, że backend działa na ' + BASE_URL;
+            }
+        }
+
+        async function testAllEndpoints() {
+            const endpoints = [
+                ['hello', '/api/hello'],
+                ['departments', '/api/departments'],
+                ['categories', '/api/categories'],
+                ['technicians', '/api/technicians'],
+                ['tickets', '/api/tickets'],
+                ['report', '/api/reports/tickets']
+            ];
+
+            for (const [name, endpoint] of endpoints) {
+                await testEndpoint(name, endpoint);
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
+        }
+
+        // Auto-test na starcie
+        window.addEventListener('load', () => {
+            setTimeout(() => testAllEndpoints(), 500);
+        });
+    </script>
+</body>
+</html>
+
