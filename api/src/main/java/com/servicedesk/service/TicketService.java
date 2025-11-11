@@ -91,6 +91,21 @@ public class TicketService {
     public List<Ticket> getByReporterId(Long reporterId) {
         return ticketRepo.findAll().stream()
                 .filter(t -> t.getReporter() != null && t.getReporter().getId().equals(reporterId))
+                .peek(t -> {
+                    // Force initialization of lazy loaded entities
+                    if (t.getTechnician() != null) {
+                        t.getTechnician().getFirstName();
+                    }
+                    if (t.getCategory() != null) {
+                        t.getCategory().getName();
+                    }
+                    if (t.getReporter() != null) {
+                        t.getReporter().getFirstName();
+                        if (t.getReporter().getDepartment() != null) {
+                            t.getReporter().getDepartment().getName();
+                        }
+                    }
+                })
                 .toList();
     }
 
@@ -99,6 +114,21 @@ public class TicketService {
     public List<Ticket> getByTechnicianId(Long technicianId) {
         return ticketRepo.findAll().stream()
                 .filter(t -> t.getTechnician() != null && t.getTechnician().getId().equals(technicianId))
+                .peek(t -> {
+                    // Force initialization of lazy loaded entities
+                    if (t.getTechnician() != null) {
+                        t.getTechnician().getFirstName();
+                    }
+                    if (t.getCategory() != null) {
+                        t.getCategory().getName();
+                    }
+                    if (t.getReporter() != null) {
+                        t.getReporter().getFirstName();
+                        if (t.getReporter().getDepartment() != null) {
+                            t.getReporter().getDepartment().getName();
+                        }
+                    }
+                })
                 .toList();
     }
 

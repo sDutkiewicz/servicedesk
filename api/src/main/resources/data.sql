@@ -31,14 +31,15 @@ insert into accounts (id, login, password, role, user_id, technician_id) values
 insert into categories (id, name) values
 (1,'Sprzęt'), (2,'Oprogramowanie'), (3,'Konto');
 
+-- Testowe zgłoszenia używają ID 100+ żeby nie kolidować z nowymi zgłoszeniami użytkowników (ID 1, 2, 3...)
 insert into tickets
   (id, title, description, priority, status, reporter_id, technician_id, category_id, created_at, closed_at)
 values
-  (1,'Nie działa drukarka','Pokój 204','HIGH','OPEN',1,1,1, TIMESTAMP '2025-11-10 10:00:00', NULL),
-  (2,'VPN rozłącza','Po aktualizacji','MEDIUM','IN_PROGRESS',2,1,2, TIMESTAMP '2025-11-10 09:30:00', NULL),
-  (3,'Reset hasła','Brak dostępu do maila','LOW','CLOSED',3,2,3, TIMESTAMP '2025-11-09 14:00:00', TIMESTAMP '2025-11-09 16:30:00');
+  (100,'Nie działa drukarka','Pokój 204','HIGH','OPEN',1,1,1, TIMESTAMP '2025-11-10 10:00:00', NULL),
+  (101,'VPN rozłącza','Po aktualizacji','MEDIUM','IN_PROGRESS',2,1,2, TIMESTAMP '2025-11-10 09:30:00', NULL),
+  (102,'Reset hasła','Brak dostępu do maila','LOW','CLOSED',3,2,3, TIMESTAMP '2025-11-09 14:00:00', TIMESTAMP '2025-11-09 16:30:00');
 
 insert into comments (ticket_id, author_id, content, created_at) values
-(1,1,'Problem pojawił się dziś rano', TIMESTAMP '2025-11-10 10:15:00'),
-(1,2,'Sprawdzę sterowniki',          TIMESTAMP '2025-11-10 10:30:00'),
-(3,3,'Proszę o weryfikację 2FA',     TIMESTAMP '2025-11-09 14:30:00');
+(100,1,'Problem pojawił się dziś rano', TIMESTAMP '2025-11-10 10:15:00'),
+(100,4,'Sprawdzę sterowniki',          TIMESTAMP '2025-11-10 10:30:00'),
+(102,3,'Proszę o weryfikację 2FA',     TIMESTAMP '2025-11-09 14:30:00');

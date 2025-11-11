@@ -182,6 +182,8 @@ public class HomeController {
                         window.location.href = '/technician.html';
                     } else if (data.role === 'user') {
                         window.location.href = '/user.html';
+                    } else if (data.role === 'admin') {
+                        window.location.href = '/api/tickets';
                     } else {
                         window.location.href = '/api/tickets';
                     }
@@ -540,6 +542,365 @@ public class HomeController {
         function closeModal() {
             document.getElementById('modal-details').classList.remove('active');
         }
+    </script>
+</body>
+</html>
+                """;
+    }
+
+    @GetMapping(value = "/user.html", produces = MediaType.TEXT_HTML_VALUE)
+    @ResponseBody
+    public String userPanel() {
+        return """
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel Pracownika - Service Desk</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f7fa; color: #333; }
+        .navbar { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 1rem 2rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .navbar h1 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+        .user-info { font-size: 0.9rem; opacity: 0.9; }
+        .container { max-width: 1400px; margin: 2rem auto; padding: 0 2rem; }
+        .tabs { display: flex; gap: 1rem; margin-bottom: 2rem; border-bottom: 2px solid #e0e0e0; }
+        .tab { padding: 1rem 2rem; background: none; border: none; cursor: pointer; font-weight: 600; color: #666; border-bottom: 3px solid transparent; transition: all 0.3s; }
+        .tab.active { color: #667eea; border-bottom-color: #667eea; }
+        .tab:hover { color: #667eea; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+        .stat-card { background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); text-align: center; }
+        .stat-card h3 { color: #999; font-size: 0.9rem; margin-bottom: 0.5rem; }
+        .stat-card .number { font-size: 2.5rem; font-weight: bold; color: #667eea; }
+        .btn { padding: 0.6rem 1.2rem; border: none; border-radius: 5px; cursor: pointer; font-weight: 600; transition: all 0.3s; }
+        .btn-primary { background: #667eea; color: white; }
+        .btn-primary:hover { background: #5568d3; transform: translateY(-2px); }
+        .btn-large { padding: 1rem 2rem; font-size: 1.1rem; }
+        .form-card { background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); max-width: 800px; }
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: #555; }
+        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 0.8rem; border: 2px solid #e0e0e0; border-radius: 5px; font-family: inherit; font-size: 1rem; }
+        .form-group textarea { resize: vertical; min-height: 120px; }
+        .form-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+        .tickets-grid { display: grid; gap: 1.5rem; }
+        .ticket-card { background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); border-left: 4px solid #667eea; cursor: pointer; transition: all 0.3s; }
+        .ticket-card:hover { transform: translateY(-3px); box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
+        .ticket-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem; }
+        .ticket-title { font-size: 1.3rem; font-weight: 600; color: #333; }
+        .ticket-badges { display: flex; gap: 0.5rem; }
+        .badge { padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+        .badge-open { background: #e3f2fd; color: #1976d2; }
+        .badge-in-progress { background: #fff3e0; color: #f57c00; }
+        .badge-resolved { background: #e8f5e9; color: #388e3c; }
+        .badge-closed { background: #f3e5f5; color: #7b1fa2; }
+        .badge-low { background: #e3f2fd; color: #1976d2; }
+        .badge-medium { background: #fff3e0; color: #f57c00; }
+        .badge-high { background: #ffebee; color: #c62828; }
+        .badge-critical { background: #fce4ec; color: #880e4f; }
+        .ticket-info { display: flex; gap: 1.5rem; font-size: 0.9rem; color: #666; margin: 0.5rem 0; }
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; }
+        .modal.active { display: flex; }
+        .modal-content { background: white; padding: 2rem; border-radius: 10px; max-width: 700px; width: 90%; max-height: 85vh; overflow-y: auto; }
+        .close { float: right; font-size: 1.5rem; cursor: pointer; color: #999; line-height: 1; }
+        .close:hover { color: #333; }
+        .comments-section { margin-top: 2rem; padding-top: 1.5rem; border-top: 2px solid #eee; }
+        .comment { background: #f9f9f9; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; border-left: 3px solid #667eea; }
+        .comment-header { display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.9rem; }
+        .comment-author { font-weight: 600; color: #667eea; }
+        .comment-date { color: #999; }
+        .loading, .empty { text-align: center; padding: 3rem; color: #999; }
+        .detail-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin: 1.5rem 0; }
+        .detail-item { padding: 0.5rem; }
+        .detail-label { font-size: 0.85rem; color: #999; margin-bottom: 0.3rem; }
+        .detail-value { font-weight: 500; color: #333; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <h1>👤 Panel Pracownika</h1>
+        <div class="user-info">
+            Zalogowany jako: <strong id="user-name">Pracownik</strong> | 
+            <a href="/" style="color: white; text-decoration: underline;">Wyloguj</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('my-tickets')">📋 Moje zgłoszenia</button>
+            <button class="tab" onclick="switchTab('new-ticket')">➕ Nowe zgłoszenie</button>
+        </div>
+
+        <!-- TAB: Moje zgłoszenia -->
+        <div id="tab-my-tickets" class="tab-content active">
+            <div class="stats">
+                <div class="stat-card">
+                    <h3>Wszystkie zgłoszenia</h3>
+                    <div class="number" id="stat-all">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Otwarte</h3>
+                    <div class="number" id="stat-open">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>W realizacji</h3>
+                    <div class="number" id="stat-progress">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Rozwiązane</h3>
+                    <div class="number" id="stat-resolved">0</div>
+                </div>
+            </div>
+
+            <div id="tickets-container" class="tickets-grid">
+                <div class="loading">Ładowanie zgłoszeń...</div>
+            </div>
+        </div>
+
+        <!-- TAB: Nowe zgłoszenie -->
+        <div id="tab-new-ticket" class="tab-content">
+            <div class="form-card">
+                <h2 style="margin-bottom: 1.5rem;">Zgłoś nowy problem</h2>
+                <form id="form-new-ticket">
+                    <div class="form-group">
+                        <label for="ticket-title">Tytuł problemu*</label>
+                        <input type="text" id="ticket-title" placeholder="Np. Nie działa drukarka w pokoju 204" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="ticket-description">Opis problemu</label>
+                        <textarea id="ticket-description" placeholder="Opisz szczegółowo problem..."></textarea>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="ticket-priority">Priorytet*</label>
+                            <select id="ticket-priority" required>
+                                <option value="LOW">Niski - może poczekać</option>
+                                <option value="MEDIUM" selected>Średni - normalna sprawa</option>
+                                <option value="HIGH">Wysoki - pilne</option>
+                                <option value="CRITICAL">Krytyczny - blokuje pracę</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="ticket-category">Kategoria</label>
+                            <select id="ticket-category">
+                                <option value="">Wybierz kategorię...</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="ticket-technician">Przypisz do technika (opcjonalnie)</label>
+                        <select id="ticket-technician">
+                            <option value="">Zostaw nieprzypisane - system przypisze automatycznie</option>
+                        </select>
+                    </div>
+                    
+                    <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                        <button type="submit" class="btn btn-primary btn-large">📤 Wyślij zgłoszenie</button>
+                        <button type="button" class="btn" onclick="switchTab('my-tickets')">Anuluj</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal szczegółów zgłoszenia -->
+    <div id="modal-details" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+
+    <script>
+        const API = 'http://localhost:8080/api';
+        let user = null;
+        let allTickets = [];
+        
+        window.onload = () => {
+            const u = sessionStorage.getItem('user');
+            if (!u) { window.location.href = '/'; return; }
+            user = JSON.parse(u);
+            if (user.role !== 'user') { alert('Brak dostępu!'); window.location.href = '/'; return; }
+            document.getElementById('user-name').textContent = user.login;
+            loadCategories();
+            loadTechnicians();
+            loadMyTickets();
+        };
+        
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            
+            // Znajdź i aktywuj odpowiednią zakładkę
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => {
+                if (tab.textContent.includes(tabName === 'my-tickets' ? 'Moje zgłoszenia' : 'Nowe zgłoszenie')) {
+                    tab.classList.add('active');
+                }
+            });
+            
+            document.getElementById('tab-' + tabName).classList.add('active');
+        }
+        
+        async function loadCategories() {
+            try {
+                const res = await fetch(API + '/categories');
+                const categories = await res.json();
+                const select = document.getElementById('ticket-category');
+                categories.forEach(c => {
+                    const option = document.createElement('option');
+                    option.value = c.id;
+                    option.textContent = c.name;
+                    select.appendChild(option);
+                });
+            } catch(e) { console.error('Błąd ładowania kategorii'); }
+        }
+        
+        async function loadTechnicians() {
+            try {
+                const res = await fetch(API + '/technicians');
+                const technicians = await res.json();
+                const select = document.getElementById('ticket-technician');
+                technicians.forEach(t => {
+                    const option = document.createElement('option');
+                    option.value = t.id;
+                    option.textContent = t.firstName + ' ' + t.lastName + ' (' + (t.department?.name || 'IT') + ')';
+                    select.appendChild(option);
+                });
+            } catch(e) { console.error('Błąd ładowania techników'); }
+        }
+        
+        async function loadMyTickets() {
+            const container = document.getElementById('tickets-container');
+            container.innerHTML = '<div class="loading">Ładowanie...</div>';
+            try {
+                const res = await fetch(API + '/tickets/my?userId=' + user.userId);
+                allTickets = await res.json();
+                updateStats();
+                displayTickets(allTickets);
+            } catch(e) { container.innerHTML = '<div class="empty">Błąd ładowania zgłoszeń</div>'; }
+        }
+        
+        function updateStats() {
+            document.getElementById('stat-all').textContent = allTickets.length;
+            document.getElementById('stat-open').textContent = allTickets.filter(t => t.status === 'OPEN').length;
+            document.getElementById('stat-progress').textContent = allTickets.filter(t => t.status === 'IN_PROGRESS').length;
+            document.getElementById('stat-resolved').textContent = allTickets.filter(t => t.status === 'RESOLVED' || t.status === 'CLOSED').length;
+        }
+        
+        function displayTickets(tickets) {
+            const container = document.getElementById('tickets-container');
+            if (tickets.length === 0) {
+                container.innerHTML = '<div class="empty">Nie masz jeszcze żadnych zgłoszeń. Kliknij "Nowe zgłoszenie" aby zgłosić problem.</div>';
+                return;
+            }
+            const statusMap = {OPEN:'Otwarte',IN_PROGRESS:'W realizacji',RESOLVED:'Rozwiązane',CLOSED:'Zamknięte'};
+            const prioMap = {LOW:'Niski',MEDIUM:'Średni',HIGH:'Wysoki',CRITICAL:'Krytyczny'};
+            container.innerHTML = tickets.map(t => `
+                <div class="ticket-card" onclick="showDetails(${t.id})">
+                    <div class="ticket-header">
+                        <div class="ticket-title">${t.title}</div>
+                        <div class="ticket-badges">
+                            <span class="badge badge-${t.status.toLowerCase()}">${statusMap[t.status]}</span>
+                            <span class="badge badge-${t.priority.toLowerCase()}">${prioMap[t.priority]}</span>
+                        </div>
+                    </div>
+                    <div class="ticket-info">
+                        <span>🔧 ${t.technician ? t.technician.firstName + ' ' + t.technician.lastName : 'Nieprzypisany'}</span>
+                        <span>📁 ${t.category?.name || 'Brak kategorii'}</span>
+                        <span>📅 ${new Date(t.createdAt).toLocaleString('pl-PL')}</span>
+                    </div>
+                    <p style="color: #666; margin-top: 0.5rem;">${t.description || ''}</p>
+                </div>
+            `).join('');
+        }
+        
+        async function showDetails(ticketId) {
+            const ticket = allTickets.find(t => t.id === ticketId);
+            if (!ticket) return;
+            try {
+                const cRes = await fetch(API + '/comments/ticket/' + ticketId);
+                const comments = await cRes.json();
+                const statusMap = {OPEN:'Otwarte',IN_PROGRESS:'W realizacji',RESOLVED:'Rozwiązane',CLOSED:'Zamknięte'};
+                const prioMap = {LOW:'Niski',MEDIUM:'Średni',HIGH:'Wysoki',CRITICAL:'Krytyczny'};
+                document.getElementById('modal-body').innerHTML = `
+                    <h2>${ticket.title}</h2>
+                    <div style="margin: 1rem 0;">
+                        <span class="badge badge-${ticket.status.toLowerCase()}">${statusMap[ticket.status]}</span>
+                        <span class="badge badge-${ticket.priority.toLowerCase()}">${prioMap[ticket.priority]}</span>
+                    </div>
+                    <div class="detail-grid">
+                        <div class="detail-item"><div class="detail-label">Technik</div><div class="detail-value">${ticket.technician ? ticket.technician.firstName + ' ' + ticket.technician.lastName : 'Jeszcze nieprzypisany'}</div></div>
+                        <div class="detail-item"><div class="detail-label">Kategoria</div><div class="detail-value">${ticket.category?.name || 'Brak'}</div></div>
+                        <div class="detail-item"><div class="detail-label">Data zgłoszenia</div><div class="detail-value">${new Date(ticket.createdAt).toLocaleString('pl-PL')}</div></div>
+                        ${ticket.closedAt ? '<div class="detail-item"><div class="detail-label">Data zamknięcia</div><div class="detail-value">'+new Date(ticket.closedAt).toLocaleString('pl-PL')+'</div></div>' : ''}
+                    </div>
+                    <div style="margin: 1.5rem 0;"><strong>Opis:</strong><p style="color: #666; margin-top: 0.5rem;">${ticket.description || 'Brak opisu'}</p></div>
+                    <div class="comments-section">
+                        <h3>Historia działań (${comments.length})</h3>
+                        ${comments.length === 0 ? '<p style="color: #999;">Brak komentarzy - czekamy na technika</p>' : comments.map(c => 
+                            '<div class="comment"><div class="comment-header"><span class="comment-author">'+(c.author?.firstName||'')+' '+(c.author?.lastName||'')+'</span><span class="comment-date">'+new Date(c.createdAt).toLocaleString('pl-PL')+'</span></div><div>'+c.content+'</div></div>'
+                        ).join('')}
+                        ${ticket.status !== 'CLOSED' && ticket.status !== 'RESOLVED' ? `
+                        <div class="form-group" style="margin-top: 1.5rem;">
+                            <label>Dodaj komentarz:</label>
+                            <textarea id="new-comment" placeholder="Dodatkowe informacje o problemie..."></textarea>
+                            <button class="btn btn-primary" onclick="addComment(${ticketId})" style="margin-top: 0.5rem;">Dodaj komentarz</button>
+                        </div>` : ''}
+                    </div>
+                `;
+                document.getElementById('modal-details').classList.add('active');
+            } catch(e) { alert('Błąd ładowania szczegółów'); }
+        }
+        
+        async function addComment(ticketId) {
+            const content = document.getElementById('new-comment').value.trim();
+            if (!content) { alert('Wpisz treść komentarza'); return; }
+            try {
+                await fetch(API + '/comments', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ticketId: ticketId, authorId: user.userId, content: content })
+                });
+                alert('Komentarz dodany!');
+                closeModal();
+                loadMyTickets();
+            } catch(e) { alert('Błąd dodawania komentarza'); }
+        }
+        
+        function closeModal() {
+            document.getElementById('modal-details').classList.remove('active');
+        }
+        
+        document.getElementById('form-new-ticket').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const categoryId = document.getElementById('ticket-category').value;
+            const technicianId = document.getElementById('ticket-technician').value;
+            const data = {
+                title: document.getElementById('ticket-title').value,
+                description: document.getElementById('ticket-description').value,
+                priority: document.getElementById('ticket-priority').value,
+                reporterId: user.userId,
+                categoryId: categoryId ? parseInt(categoryId) : null,
+                technicianId: technicianId ? parseInt(technicianId) : null
+            };
+            try {
+                await fetch(API + '/tickets', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                alert('✅ Zgłoszenie zostało wysłane!' + (technicianId ? ' Przypisano do wybranego technika.' : ' Zgłoszenie czeka na przypisanie.'));
+                e.target.reset();
+                switchTab('my-tickets');
+                loadMyTickets();
+            } catch(err) { alert('Błąd wysyłania zgłoszenia: ' + err.message); }
+        });
     </script>
 </body>
 </html>
