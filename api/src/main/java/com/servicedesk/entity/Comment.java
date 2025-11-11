@@ -1,5 +1,6 @@
 package com.servicedesk.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
@@ -7,6 +8,7 @@ import java.time.LocalDateTime;
 
 @Entity @Table(name = "comments")
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Comment {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

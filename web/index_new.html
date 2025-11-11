@@ -7,48 +7,14 @@
     <link rel="stylesheet" href="styles_new.css">
 </head>
 <body>
-    <!-- Ekran logowania -->
-    <div id="login-screen" class="login-screen">
-        <div class="login-container">
-            <h1>🔧 Service Desk</h1>
-            <p class="subtitle">System zarządzania zgłoszeniami IT</p>
-
-            <div class="login-form">
-                <h2>Wybierz rolę</h2>
-                <div class="role-buttons">
-                    <button class="role-btn" onclick="login('admin')">
-                        <span class="icon">👑</span>
-                        <span class="role-name">Administrator</span>
-                        <span class="role-desc">Pełny dostęp do systemu</span>
-                    </button>
-                    <button class="role-btn" onclick="login('technician')">
-                        <span class="icon">🔧</span>
-                        <span class="role-name">Technik IT</span>
-                        <span class="role-desc">Obsługa zgłoszeń</span>
-                    </button>
-                    <button class="role-btn" onclick="login('user')">
-                        <span class="icon">👤</span>
-                        <span class="role-name">Użytkownik</span>
-                        <span class="role-desc">Zgłaszanie problemów</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Główna aplikacja (ukryta do czasu logowania) -->
-    <div id="app" class="app hidden">
     <nav class="navbar">
         <div class="container">
-            <div class="nav-header">
-                <h1>🔧 Service Desk</h1>
-                <div class="user-info">
-                    <span id="current-user-role"></span>
-                    <button class="btn-logout" onclick="logout()">Wyloguj</button>
-                </div>
-            </div>
-            <div class="nav-links" id="nav-links">
-                <!-- Menu będzie generowane dynamicznie -->
+            <h1>🔧 Service Desk</h1>
+            <div class="nav-links">
+                <a href="#" class="nav-link active" data-view="tickets">Zgłoszenia</a>
+                <a href="#" class="nav-link" data-view="new-ticket">Nowe zgłoszenie</a>
+                <a href="#" class="nav-link" data-view="reports">Raporty</a>
+                <a href="#" class="nav-link" data-view="manage">Zarządzanie</a>
             </div>
         </div>
     </nav>
@@ -169,9 +135,8 @@
                 </div>
             </div>
         </div>
-    </main>
 
-    <!-- Modal dodawania komentarza -->
+        <!-- Widok zarządzania -->
         <div id="view-manage" class="view">
             <h2>Zarządzanie</h2>
             <div class="tabs">
@@ -236,9 +201,8 @@
             </form>
         </div>
     </div>
-    </div><!-- End app -->
 
-    <script type="module" src="app.js"></script>
+    <script type="module" src="app_new.js"></script>
 </body>
 </html>
 

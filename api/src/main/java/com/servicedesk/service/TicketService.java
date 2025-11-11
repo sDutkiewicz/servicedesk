@@ -83,6 +83,25 @@ public class TicketService {
     @Transactional(readOnly = true)
     public List<Ticket> all(){ return ticketRepo.findAll(); }
 
+    @Transactional(readOnly = true)
+    public Ticket getById(Long id){ return ticketRepo.findById(id).orElseThrow(); }
+
+    // Pobierz zgłoszenia dla konkretnego użytkownika (tylko jego zgłoszenia)
+    @Transactional(readOnly = true)
+    public List<Ticket> getByReporterId(Long reporterId) {
+        return ticketRepo.findAll().stream()
+                .filter(t -> t.getReporter() != null && t.getReporter().getId().equals(reporterId))
+                .toList();
+    }
+
+    // Pobierz zgłoszenia dla konkretnego technika (przypisane do niego)
+    @Transactional(readOnly = true)
+    public List<Ticket> getByTechnicianId(Long technicianId) {
+        return ticketRepo.findAll().stream()
+                .filter(t -> t.getTechnician() != null && t.getTechnician().getId().equals(technicianId))
+                .toList();
+    }
+
     // F5 — raport: liczba otwartych/zamkniętych wg działu/technika
     @Transactional(readOnly = true)
     public List<Map<String,Object>> countBy(String groupBy){

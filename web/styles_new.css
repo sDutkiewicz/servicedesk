@@ -1,0 +1,128 @@
+/* ...existing code... */
+
+/* Login Screen */
+.login-screen {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 20px;
+}
+
+.login-container {
+    text-align: center;
+    color: white;
+}
+
+.login-container h1 {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+}
+
+.subtitle {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    margin-bottom: 3rem;
+}
+
+.login-form {
+    background: white;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.login-form h2 {
+    color: #333;
+    margin-bottom: 2rem;
+}
+
+.role-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.role-btn {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.5rem;
+    background: white;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-align: left;
+}
+
+.role-btn:hover {
+    border-color: #667eea;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 20px rgba(102, 126, 234, 0.3);
+}
+
+.role-btn .icon {
+    font-size: 2.5rem;
+}
+
+.role-btn .role-name {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #333;
+    display: block;
+}
+
+.role-btn .role-desc {
+    font-size: 0.9rem;
+    color: #999;
+    display: block;
+    margin-top: 0.3rem;
+}
+
+/* App container */
+.app.hidden {
+    display: none;
+}
+
+/* Updated navbar for user info */
+.nav-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: white;
+}
+
+.user-info span {
+    font-weight: 500;
+}
+
+.btn-logout {
+    padding: 0.5rem 1rem;
+    background: rgba(255,255,255,0.2);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-logout:hover {
+    background: rgba(255,255,255,0.3);
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* ...existing code... */

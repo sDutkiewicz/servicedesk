@@ -1,0 +1,10 @@
+# Service Desk - Konta użytkowników
+# Format: login:haslo:rola
+# Role: admin, technician, user
+
+admin:admin123:admin
+technik:technik123:technician
+user:user123:user
+jan.kowalski:pass123:user
+tomasz.bialy:tech456:technician
+

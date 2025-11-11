@@ -14,5 +14,23 @@ public class TechnicianController {
     @PostMapping @ResponseStatus(HttpStatus.CREATED)
     public Technician create(@RequestBody Technician t){ return repo.save(t); }
 
-    @GetMapping public List<Technician> all(){ return repo.findAll(); }
+    @GetMapping
+    public List<Technician> all(){ return repo.findAll(); }
+
+    @GetMapping("/{id}")
+    public Technician getById(@PathVariable Long id){ return repo.findById(id).orElseThrow(); }
+
+    @PutMapping("/{id}")
+    public Technician update(@PathVariable Long id, @RequestBody Technician t){
+        Technician existing = repo.findById(id).orElseThrow();
+        existing.setFirstName(t.getFirstName());
+        existing.setLastName(t.getLastName());
+        existing.setEmail(t.getEmail());
+        if (t.getDepartment() != null) existing.setDepartment(t.getDepartment());
+        return repo.save(existing);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id){ repo.deleteById(id); }
 }

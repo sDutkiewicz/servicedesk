@@ -14,5 +14,20 @@ public class DepartmentController {
     @PostMapping @ResponseStatus(HttpStatus.CREATED)
     public Department create(@RequestBody Department d){ return repo.save(d); }
 
-    @GetMapping public List<Department> all(){ return repo.findAll(); }
+    @GetMapping
+    public List<Department> all(){ return repo.findAll(); }
+
+    @GetMapping("/{id}")
+    public Department getById(@PathVariable Long id){ return repo.findById(id).orElseThrow(); }
+
+    @PutMapping("/{id}")
+    public Department update(@PathVariable Long id, @RequestBody Department d){
+        Department existing = repo.findById(id).orElseThrow();
+        existing.setName(d.getName());
+        return repo.save(existing);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id){ repo.deleteById(id); }
 }

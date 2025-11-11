@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Technika - Service Desk</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            color: #333;
+        }
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .navbar h1 {
+            font-size: 1.5rem;
+        }
+        .user-info {
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+        .stat-card h3 {
+            color: #999;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        .stat-card .number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+        .filters {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .filters select {
+            padding: 0.6rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            min-width: 150px;
+        }
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+        .tickets-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+        .ticket-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-left: 4px solid #667eea;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .ticket-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        .ticket-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+        .ticket-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #333;
+        }
+        .ticket-badges {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .badge-open { background: #e3f2fd; color: #1976d2; }
+        .badge-in-progress { background: #fff3e0; color: #f57c00; }
+        .badge-resolved { background: #e8f5e9; color: #388e3c; }
+        .badge-closed { background: #f3e5f5; color: #7b1fa2; }
+        .badge-low { background: #e3f2fd; color: #1976d2; }
+        .badge-medium { background: #fff3e0; color: #f57c00; }
+        .badge-high { background: #ffebee; color: #c62828; }
+        .badge-critical { background: #fce4ec; color: #880e4f; }
+        .ticket-info {
+            display: flex;
+            gap: 1.5rem;
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 1rem;
+        }
+        .ticket-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        .btn-small {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.85rem;
+        }
+        .btn-success {
+            background: #4caf50;
+            color: white;
+        }
+        .btn-warning {
+            background: #ff9800;
+            color: white;
+        }
+        .btn-danger {
+            background: #f44336;
+            color: white;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal.active {
+            display: flex;
+        }
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .close {
+            float: right;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #999;
+        }
+        .close:hover {
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #555;
+        }
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 100px;
+        }
+        .comments-section {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #eee;
+        }
+        .comment {
+            background: #f9f9f9;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border-left: 3px solid #667eea;
+        }
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+        .comment-author {
+            font-weight: 600;
+            color: #667eea;
+        }
+        .comment-date {
+            color: #999;
+        }
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: #999;
+        }
+        .empty {
+            text-align: center;
+            padding: 3rem;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <h1>🔧 Panel Technika IT</h1>
+        <div class="user-info">
+            Zalogowany jako: <strong id="tech-name">Technik</strong> |
+            <a href="/" style="color: white; text-decoration: underline;">Wyloguj</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Statystyki -->
+        <div class="stats">
+            <div class="stat-card">
+                <h3>Przypisane do mnie</h3>
+                <div class="number" id="stat-assigned">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>W realizacji</h3>
+                <div class="number" id="stat-in-progress">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Rozwiązane dziś</h3>
+                <div class="number" id="stat-resolved">0</div>
+            </div>
+        </div>
+
+        <!-- Filtry -->
+        <div class="filters">
+            <label>
+                Status:
+                <select id="filter-status">
+                    <option value="">Wszystkie</option>
+                    <option value="OPEN">Otwarte</option>
+                    <option value="IN_PROGRESS" selected>W realizacji</option>
+                    <option value="RESOLVED">Rozwiązane</option>
+                    <option value="CLOSED">Zamknięte</option>
+                </select>
+            </label>
+            <label>
+                Priorytet:
+                <select id="filter-priority">
+                    <option value="">Wszystkie</option>
+                    <option value="CRITICAL">Krytyczny</option>
+                    <option value="HIGH">Wysoki</option>
+                    <option value="MEDIUM">Średni</option>
+                    <option value="LOW">Niski</option>
+                </select>
+            </label>
+            <button class="btn btn-primary" onclick="loadTickets()">Odśwież</button>
+        </div>
+
+        <!-- Lista zgłoszeń -->
+        <div id="tickets-container" class="tickets-grid">
+            <div class="loading">Ładowanie zgłoszeń...</div>
+        </div>
+    </div>
+
+    <!-- Modal szczegółów zgłoszenia -->
+    <div id="modal-details" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:8080/api';
+        let currentUser = null;
+        let allTickets = [];
+
+        // Sprawdź czy użytkownik jest zalogowany
+        window.addEventListener('DOMContentLoaded', () => {
+            const userStr = sessionStorage.getItem('user');
+            if (!userStr) {
+                window.location.href = '/';
+                return;
+            }
+
+            currentUser = JSON.parse(userStr);
+
+            if (currentUser.role !== 'technician') {
+                alert('Brak dostępu! Ten panel jest tylko dla techników.');
+                window.location.href = '/';
+                return;
+            }
+
+            document.getElementById('tech-name').textContent = currentUser.login;
+            loadTickets();
+        });
+
+        async function loadTickets() {
+            const container = document.getElementById('tickets-container');
+            container.innerHTML = '<div class="loading">Ładowanie...</div>';
+
+            try {
+                const response = await fetch(`${API_URL}/tickets/assigned?technicianId=${currentUser.technicianId}`);
+                allTickets = await response.json();
+
+                updateStats();
+                displayTickets(filterTickets());
+            } catch (error) {
+                container.innerHTML = '<div class="empty">Błąd ładowania zgłoszeń</div>';
+            }
+        }
+
+        function filterTickets() {
+            const status = document.getElementById('filter-status').value;
+            const priority = document.getElementById('filter-priority').value;
+
+            return allTickets.filter(t => {
+                if (status && t.status !== status) return false;
+                if (priority && t.priority !== priority) return false;
+                return true;
+            });
+        }
+
+        function displayTickets(tickets) {
+            const container = document.getElementById('tickets-container');
+
+            if (tickets.length === 0) {
+                container.innerHTML = '<div class="empty">Brak zgłoszeń</div>';
+                return;
+            }
+
+            container.innerHTML = tickets.map(t => `
+                <div class="ticket-card" onclick="showDetails(${t.id})">
+                    <div class="ticket-header">
+                        <div class="ticket-title">${t.title}</div>
+                        <div class="ticket-badges">
+                            <span class="badge badge-${t.status.toLowerCase()}">${translateStatus(t.status)}</span>
+                            <span class="badge badge-${t.priority.toLowerCase()}">${translatePriority(t.priority)}</span>
+                        </div>
+                    </div>
+                    <div class="ticket-info">
+                        <span>👤 ${t.reporter.firstName} ${t.reporter.lastName}</span>
+                        <span>📁 ${t.category?.name || 'Brak'}</span>
+                        <span>📅 ${formatDate(t.createdAt)}</span>
+                    </div>
+                    <p style="color: #666; margin-top: 0.5rem;">${t.description || ''}</p>
+                    <div class="ticket-actions">
+                        ${t.status === 'OPEN' ? `<button class="btn btn-small btn-warning" onclick="event.stopPropagation(); changeStatus(${t.id}, 'IN_PROGRESS')">▶ Rozpocznij</button>` : ''}
+                        ${t.status === 'IN_PROGRESS' ? `<button class="btn btn-small btn-success" onclick="event.stopPropagation(); changeStatus(${t.id}, 'RESOLVED')">✓ Rozwiązane</button>` : ''}
+                        ${t.status === 'RESOLVED' ? `<button class="btn btn-small btn-danger" onclick="event.stopPropagation(); changeStatus(${t.id}, 'CLOSED')">✕ Zamknij</button>` : ''}
+                        <button class="btn btn-small btn-primary" onclick="event.stopPropagation(); showDetails(${t.id})">💬 Szczegóły</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateStats() {
+            document.getElementById('stat-assigned').textContent = allTickets.length;
+            document.getElementById('stat-in-progress').textContent =
+                allTickets.filter(t => t.status === 'IN_PROGRESS').length;
+            document.getElementById('stat-resolved').textContent =
+                allTickets.filter(t => t.status === 'RESOLVED' || t.status === 'CLOSED').length;
+        }
+
+        async function showDetails(ticketId) {
+            const ticket = allTickets.find(t => t.id === ticketId);
+            if (!ticket) return;
+
+            try {
+                const commentsResponse = await fetch(`${API_URL}/comments/ticket/${ticketId}`);
+                const comments = await commentsResponse.json();
+
+                const modal = document.getElementById('modal-details');
+                const body = document.getElementById('modal-body');
+
+                body.innerHTML = `
+                    <h2>${ticket.title}</h2>
+                    <div style="margin: 1rem 0;">
+                        <span class="badge badge-${ticket.status.toLowerCase()}">${translateStatus(ticket.status)}</span>
+                        <span class="badge badge-${ticket.priority.toLowerCase()}">${translatePriority(ticket.priority)}</span>
+                    </div>
+
+                    <div style="margin: 1.5rem 0;">
+                        <p><strong>Zgłaszający:</strong> ${ticket.reporter.firstName} ${ticket.reporter.lastName}</p>
+                        <p><strong>Dział:</strong> ${ticket.reporter.department.name}</p>
+                        <p><strong>Kategoria:</strong> ${ticket.category?.name || 'Brak'}</p>
+                        <p><strong>Data zgłoszenia:</strong> ${formatDate(ticket.createdAt)}</p>
+                        ${ticket.closedAt ? `<p><strong>Data zamknięcia:</strong> ${formatDate(ticket.closedAt)}</p>` : ''}
+                    </div>
+
+                    <div style="margin: 1.5rem 0;">
+                        <strong>Opis:</strong>
+                        <p style="color: #666; margin-top: 0.5rem;">${ticket.description || 'Brak opisu'}</p>
+                    </div>
+
+                    <div style="display: flex; gap: 0.5rem; margin: 1.5rem 0;">
+                        ${ticket.status === 'OPEN' ? `<button class="btn btn-warning" onclick="changeStatus(${ticket.id}, 'IN_PROGRESS'); closeModal();">▶ Rozpocznij</button>` : ''}
+                        ${ticket.status === 'IN_PROGRESS' ? `<button class="btn btn-success" onclick="changeStatus(${ticket.id}, 'RESOLVED'); closeModal();">✓ Rozwiązane</button>` : ''}
+                        ${ticket.status === 'RESOLVED' ? `<button class="btn btn-danger" onclick="changeStatus(${ticket.id}, 'CLOSED'); closeModal();">✕ Zamknij</button>` : ''}
+                    </div>
+
+                    <div class="comments-section">
+                        <h3>Komentarze (${comments.length})</h3>
+                        <div id="comments-list">
+                            ${comments.map(c => `
+                                <div class="comment">
+                                    <div class="comment-header">
+                                        <span class="comment-author">${c.author?.firstName} ${c.author?.lastName}</span>
+                                        <span class="comment-date">${formatDate(c.createdAt)}</span>
+                                    </div>
+                                    <div>${c.content}</div>
+                                </div>
+                            `).join('') || '<p style="color: #999;">Brak komentarzy</p>'}
+                        </div>
+
+                        <div class="form-group" style="margin-top: 1.5rem;">
+                            <label>Dodaj komentarz:</label>
+                            <textarea id="comment-text" placeholder="Opisz wykonane działania..."></textarea>
+                            <button class="btn btn-primary" onclick="addComment(${ticketId})" style="margin-top: 0.5rem;">Dodaj komentarz</button>
+                        </div>
+                    </div>
+                `;
+
+                modal.classList.add('active');
+            } catch (error) {
+                alert('Błąd ładowania szczegółów');
+            }
+        }
+
+        async function changeStatus(ticketId, newStatus) {
+            try {
+                await fetch(`${API_URL}/tickets/${ticketId}/status/${newStatus}`, {
+                    method: 'POST'
+                });
+                alert('Status zmieniony!');
+                loadTickets();
+            } catch (error) {
+                alert('Błąd zmiany statusu');
+            }
+        }
+
+        async function addComment(ticketId) {
+            const content = document.getElementById('comment-text').value.trim();
+            if (!content) {
+                alert('Wpisz treść komentarza');
+                return;
+            }
+
+            try {
+                await fetch(`${API_URL}/comments`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        ticketId: ticketId,
+                        authorId: currentUser.technicianId,
+                        content: content
+                    })
+                });
+                alert('Komentarz dodany!');
+                closeModal();
+                loadTickets();
+            } catch (error) {
+                alert('Błąd dodawania komentarza');
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('modal-details').classList.remove('active');
+        }
+
+        function translateStatus(status) {
+            const map = {
+                'OPEN': 'Otwarte',
+                'IN_PROGRESS': 'W realizacji',
+                'RESOLVED': 'Rozwiązane',
+                'CLOSED': 'Zamknięte'
+            };
+            return map[status] || status;
+        }
+
+        function translatePriority(priority) {
+            const map = {
+                'LOW': 'Niski',
+                'MEDIUM': 'Średni',
+                'HIGH': 'Wysoki',
+                'CRITICAL': 'Krytyczny'
+            };
+            return map[priority] || priority;
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return '-';
+            const date = new Date(dateString);
+            return date.toLocaleString('pl-PL', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+    </script>
+</body>
+</html>
+

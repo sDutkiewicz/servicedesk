@@ -36,4 +36,22 @@ public class TicketController {
         if (status==null && technicianId==null && departmentId==null) return service.all();
         return service.search(status, technicianId, departmentId);
     }
+
+    // Endpoint dla użytkownika - tylko jego zgłoszenia
+    @GetMapping("/my")
+    public List<Ticket> getMyTickets(@RequestParam Long userId){
+        return service.getByReporterId(userId);
+    }
+
+    // Endpoint dla technika - zgłoszenia przypisane do niego
+    @GetMapping("/assigned")
+    public List<Ticket> getAssignedTickets(@RequestParam Long technicianId){
+        return service.getByTechnicianId(technicianId);
+    }
+
+    // Get single ticket by ID - MUSI BYĆ PO /assigned i /my!
+    @GetMapping("/{id}")
+    public Ticket getById(@PathVariable Long id){
+        return service.getById(id);
+    }
 }
