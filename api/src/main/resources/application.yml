@@ -2,6 +2,16 @@ spring:
   application:
     name: servicedesk
 
+  profiles:
+    active: postgres
+
+---
+# Konfiguracja H2 (profil: h2) - na potrzeby szybkiego developmentu / testów
+spring:
+  config:
+    activate:
+      on-profile: h2
+
   datasource:
     url: jdbc:h2:mem:servicedesk;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
     driver-class-name: org.h2.Driver
@@ -24,6 +34,34 @@ spring:
     console:
       enabled: true
       path: /h2-console
+
+server:
+  port: 8080
+
+---
+# Konfiguracja PostgreSQL (profil: postgres) - środowisko docelowe
+spring:
+  config:
+    activate:
+      on-profile: postgres
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/servicedesk
+    driver-class-name: org.postgresql.Driver
+    username: servicedesk
+    password: servicedesk
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+    properties:
+      hibernate.format_sql: true
+    defer-datasource-initialization: true
+
+  sql:
+    init:
+      mode: always
 
 server:
   port: 8080

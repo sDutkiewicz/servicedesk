@@ -183,7 +183,7 @@ public class HomeController {
                     } else if (data.role === 'user') {
                         window.location.href = '/user.html';
                     } else if (data.role === 'admin') {
-                        window.location.href = '/api/tickets';
+                        window.location.href = '/admin.html';
                     } else {
                         window.location.href = '/api/tickets';
                     }
@@ -905,5 +905,348 @@ public class HomeController {
 </body>
 </html>
                 """;
+    }
+
+    @GetMapping(value = "/admin.html", produces = MediaType.TEXT_HTML_VALUE)
+    @ResponseBody
+    public String adminPanel() {
+        return """
+<!DOCTYPE html>
+<html lang=\"pl\">
+<head>
+    <meta charset=\"UTF-8\">
+    <title>Panel administratora - Service Desk</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f7fa; color: #333; }
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .navbar h1 { font-size: 1.5rem; }
+        .navbar .user-info { font-size: 0.9rem; opacity: 0.9; }
+        .container { max-width: 1400px; margin: 2rem auto; padding: 0 2rem; }
+        .section-title { font-size: 1.2rem; font-weight: 600; margin-bottom: 1rem; color: #333; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+        .stat-card { background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .stat-card h3 { font-size: 0.95rem; color: #777; margin-bottom: 0.5rem; }
+        .stat-card .value { font-size: 1.8rem; font-weight: 700; color: #667eea; }
+        .stat-card .subtitle { font-size: 0.85rem; color: #999; margin-top: 0.5rem; }
+        .layout-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; align-items: flex-start; }
+        .card { background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 2rem; }
+        .filters { display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem; align-items: center; }
+        .filters label { font-size: 0.9rem; font-weight: 600; color: #555; }
+        .filters select, .filters input {
+            padding: 0.4rem 0.6rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            min-width: 150px;
+            font-size: 0.9rem;
+        }
+        table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        th, td {
+            padding: 0.6rem 0.5rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        th {
+            background: #f5f5f5;
+            font-weight: 600;
+            color: #555;
+        }
+        tr:hover { background: #fafafa; }
+        .badge {
+            display: inline-block;
+            padding: 0.15rem 0.5rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: white;
+        }
+        .badge-status-open { background: #1976d2; }
+        .badge-status-inprogress { background: #fb8c00; }
+        .badge-status-resolved { background: #7cb342; }
+        .badge-status-closed { background: #757575; }
+        .badge-priority-low { background: #9e9e9e; }
+        .badge-priority-medium { background: #42a5f5; }
+        .badge-priority-high { background: #ef5350; }
+        .badge-priority-critical { background: #b71c1c; }
+        .pill {
+            display: inline-block;
+            padding: 0.15rem 0.5rem;
+            border-radius: 999px;
+            background: #e0e0e0;
+            font-size: 0.75rem;
+            color: #555;
+        }
+        .dictionary-list ul { list-style: none; margin-top: 0.5rem; }
+        .dictionary-list li {
+            padding: 0.3rem 0;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 0.9rem;
+        }
+        .btn {
+            padding: 0.4rem 0.8rem;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: white;
+            background: #667eea;
+            transition: background 0.2s;
+        }
+        .btn:hover { background: #5568d3; }
+        .btn-small { padding: 0.25rem 0.5rem; font-size: 0.75rem; }
+        @media (max-width: 1024px) {
+            .layout-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+<div class=\"navbar\">
+    <div>
+        <h1>🔐 Panel administratora</h1>
+        <div class=\"user-info\" id=\"adminInfo\">Zalogowany jako: admin</div>
+    </div>
+    <button class=\"btn btn-small\" onclick=\"logout()\">Wyloguj</button>
+</div>
+
+<div class=\"container\">
+    <div class=\"section-title\">Raporty systemowe</div>
+    <div class=\"stats-grid\">
+        <div class=\"stat-card\" id=\"statDept\">
+            <h3>Zgłoszenia wg działu</h3>
+            <div class=\"value\" id=\"statDeptCount\">-</div>
+            <div class=\"subtitle\">Suma otwartych i zamkniętych zgłoszeń w podziale na dział</div>
+        </div>
+        <div class=\"stat-card\" id=\"statTech\">
+            <h3>Zgłoszenia wg technika</h3>
+            <div class=\"value\" id=\"statTechCount\">-</div>
+            <div class=\"subtitle\">Liczba zgłoszeń w systemie obsługiwanych przez techników</div>
+        </div>
+        <div class=\"stat-card\" id=\"statAvg\">
+            <h3>Średni czas rozwiązania</h3>
+            <div class=\"value\" id=\"statAvgHours\">- h</div>
+            <div class=\"subtitle\">Na podstawie zgłoszeń z ustawioną datą zamknięcia</div>
+        </div>
+    </div>
+
+    <div class=\"layout-grid\">
+        <div>
+            <div class=\"card\">
+                <div class=\"section-title\">Wszystkie zgłoszenia</div>
+                <div class=\"filters\">
+                    <div>
+                        <label for=\"filterStatus\">Status:</label>
+                        <select id=\"filterStatus\">
+                            <option value=\"\">Wszystkie</option>
+                            <option value=\"OPEN\">Otwarte</option>
+                            <option value=\"IN_PROGRESS\">W realizacji</option>
+                            <option value=\"RESOLVED\">Rozwiązane</option>
+                            <option value=\"CLOSED\">Zamknięte</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for=\"filterDept\">Dział:</label>
+                        <select id=\"filterDept\">
+                            <option value=\"\">Wszystkie</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for=\"filterTech\">Technik:</label>
+                        <select id=\"filterTech\">
+                            <option value=\"\">Wszyscy</option>
+                        </select>
+                    </div>
+                    <button class=\"btn\" onclick=\"loadTickets()\">Filtruj</button>
+                </div>
+
+                <table>
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Tytuł</th>
+                        <th>Status</th>
+                        <th>Priorytet</th>
+                        <th>Zgłaszający</th>
+                        <th>Dział</th>
+                        <th>Technik</th>
+                        <th>Kategoria</th>
+                    </tr>
+                    </thead>
+                    <tbody id=\"ticketsTableBody\"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div>
+            <div class=\"card dictionary-list\">
+                <div class=\"section-title\">Słowniki i użytkownicy</div>
+                <h4>Użytkownicy</h4>
+                <ul id=\"usersList\"></ul>
+                <h4>Technicy</h4>
+                <ul id=\"techniciansList\"></ul>
+                <h4>Działy</h4>
+                <ul id=\"departmentsList\"></ul>
+                <h4>Kategorie</h4>
+                <ul id=\"categoriesList\"></ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const API_BASE = '/api';
+
+    function logout() {
+        sessionStorage.removeItem('user');
+        window.location.href = '/';
+    }
+
+    function statusBadge(status) {
+        if (!status) return '';
+        const s = status.toUpperCase();
+        const map = {
+            'OPEN': 'badge-status-open',
+            'IN_PROGRESS': 'badge-status-inprogress',
+            'RESOLVED': 'badge-status-resolved',
+            'CLOSED': 'badge-status-closed'
+        };
+        return '<span class="badge ' + (map[s] || '') + '">' + s.replace('_', ' ') + '</span>';
+    }
+
+    function priorityBadge(priority) {
+        if (!priority) return '';
+        const p = priority.toUpperCase();
+        const map = {
+            'LOW': 'badge-priority-low',
+            'MEDIUM': 'badge-priority-medium',
+            'HIGH': 'badge-priority-high',
+            'CRITICAL': 'badge-priority-critical'
+        };
+        return '<span class="badge ' + (map[p] || '') + '">' + p + '</span>';
+    }
+
+    async function loadReports() {
+        try {
+            const byDept = await fetch(API_BASE + '/reports/tickets-count?groupBy=department').then(r => r.json());
+            const byTech = await fetch(API_BASE + '/reports/tickets-count?groupBy=technician').then(r => r.json());
+            const avgRes = await fetch(API_BASE + '/reports/avg-resolution-time').then(r => r.json());
+
+            document.getElementById('statDeptCount').textContent = byDept.reduce((acc, r) => acc + r.open + r.closed, 0);
+            document.getElementById('statTechCount').textContent = byTech.reduce((acc, r) => acc + r.open + r.closed, 0);
+            document.getElementById('statAvgHours').textContent = (avgRes.avgHours || 0).toFixed(1) + ' h';
+        } catch (e) {
+            console.error('Błąd raportów', e);
+        }
+    }
+
+    async function loadDictionaries() {
+        try {
+            const [users, technicians, departments, categories] = await Promise.all([
+                fetch(API_BASE + '/users').then(r => r.json()),
+                fetch(API_BASE + '/technicians').then(r => r.json()),
+                fetch(API_BASE + '/departments').then(r => r.json()),
+                fetch(API_BASE + '/categories').then(r => r.json())
+            ]);
+
+            const usersUl = document.getElementById('usersList');
+            usersUl.innerHTML = users.map(u =>
+                `<li>${u.firstName} ${u.lastName} <span class="pill">${u.department?.name || ''}</span></li>`
+            ).join('');
+
+            const techUl = document.getElementById('techniciansList');
+            techUl.innerHTML = technicians.map(t =>
+                `<li>${t.firstName} ${t.lastName} <span class="pill">${t.department?.name || ''}</span></li>`
+            ).join('');
+
+            const deptUl = document.getElementById('departmentsList');
+            deptUl.innerHTML = departments.map(d => `<li>${d.name}</li>`).join('');
+
+            const catUl = document.getElementById('categoriesList');
+            catUl.innerHTML = categories.map(c => `<li>${c.name}</li>`).join('');
+
+            const deptSelect = document.getElementById('filterDept');
+            departments.forEach(d => {
+                const opt = document.createElement('option');
+                opt.value = d.id;
+                opt.textContent = d.name;
+                deptSelect.appendChild(opt);
+            });
+
+            const techSelect = document.getElementById('filterTech');
+            technicians.forEach(t => {
+                const opt = document.createElement('option');
+                opt.value = t.id;
+                opt.textContent = `${t.firstName} ${t.lastName}`;
+                techSelect.appendChild(opt);
+            });
+
+        } catch (e) {
+            console.error('Błąd słowników', e);
+        }
+    }
+
+    async function loadTickets() {
+        try {
+            const status = document.getElementById('filterStatus').value;
+            const deptId = document.getElementById('filterDept').value;
+            const techId = document.getElementById('filterTech').value;
+
+            const params = new URLSearchParams();
+            if (status) params.append('status', status);
+            if (deptId) params.append('departmentId', deptId);
+            if (techId) params.append('technicianId', techId);
+
+            const url = API_BASE + '/tickets' + (params.toString() ? '?' + params.toString() : '');
+            const tickets = await fetch(url).then(r => r.json());
+
+            const tbody = document.getElementById('ticketsTableBody');
+            tbody.innerHTML = tickets.map(t => `
+                <tr>
+                    <td>${t.id}</td>
+                    <td>${t.title}</td>
+                    <td>${statusBadge(t.status)}</td>
+                    <td>${priorityBadge(t.priority)}</td>
+                    <td>${t.reporter ? (t.reporter.firstName + ' ' + t.reporter.lastName) : ''}</td>
+                    <td>${t.reporter && t.reporter.department ? t.reporter.department.name : ''}</td>
+                    <td>${t.technician ? (t.technician.firstName + ' ' + t.technician.lastName) : '-'}</td>
+                    <td>${t.category ? t.category.name : '-'}</td>
+                </tr>
+            `).join('');
+        } catch (e) {
+            console.error('Błąd ładowania zgłoszeń', e);
+        }
+    }
+
+    function checkAdmin() {
+        const user = JSON.parse(sessionStorage.getItem('user') || 'null');
+        if (!user || user.role !== 'admin') {
+            window.location.href = '/';
+            return;
+        }
+        document.getElementById('adminInfo').textContent = `Zalogowany jako: ${user.login} (rola: ${user.role})`;
+    }
+
+    async function init() {
+        checkAdmin();
+        await Promise.all([
+            loadReports(),
+            loadDictionaries()
+        ]);
+        await loadTickets();
+    }
+
+    window.addEventListener('load', init);
+</script>
+</body>
+</html>
+        """;
     }
 }
