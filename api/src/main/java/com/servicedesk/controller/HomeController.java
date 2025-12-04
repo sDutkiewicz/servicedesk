@@ -237,9 +237,30 @@ public class HomeController {
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f7fa; color: #333; }
-        .navbar { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 1rem 2rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .navbar h1 { font-size: 1.5rem; margin-bottom: 0.5rem; }
-        .user-info { font-size: 0.9rem; opacity: 0.9; }
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .navbar-title { font-size: 1.5rem; margin: 0; }
+        .navbar-right { display: flex; align-items: center; gap: 1rem; font-size: 0.9rem; }
+        .navbar-right .user-info { opacity: 0.9; }
+        .btn-logout {
+            padding: 0.4rem 0.8rem;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: white;
+            background: #667eea;
+            transition: background 0.2s, transform 0.2s;
+        }
+        .btn-logout:hover { background: #5568d3; transform: translateY(-1px); }
         .container { max-width: 1400px; margin: 2rem auto; padding: 0 2rem; }
         .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
         .stat-card { background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); text-align: center; }
@@ -294,11 +315,11 @@ public class HomeController {
 </head>
 <body>
     <nav class="navbar">
-        <h1>🔧 Panel Technika IT</h1>
-        <div class="user-info">
-            Zalogowany jako: <strong id="tech-name">Technik</strong> | 
-            <a href="/" style="color: white; text-decoration: underline;">Wyloguj</a>
+        <div>
+            <h1 class="navbar-title">🔧 Panel Technika IT</h1>
+            <div class="user-info">Zalogowany jako: <strong id="tech-name">Technik</strong></div>
         </div>
+        <button class="btn-logout" onclick="logout()">Wyloguj</button>
     </nav>
 
     <div class="container">
@@ -369,7 +390,12 @@ public class HomeController {
         let user = null;
         let allTickets = [];
         let currentTicketId = null;
-        
+
+        function logout() {
+            sessionStorage.removeItem('user');
+            window.location.href = '/';
+        }
+
         window.onload = () => {
             const u = sessionStorage.getItem('user');
             if (!u) { window.location.href = '/'; return; }
@@ -560,9 +586,29 @@ public class HomeController {
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f7fa; color: #333; }
-        .navbar { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 1rem 2rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .navbar h1 { font-size: 1.5rem; margin-bottom: 0.5rem; }
-        .user-info { font-size: 0.9rem; opacity: 0.9; }
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .navbar-title { font-size: 1.5rem; margin: 0; }
+        .navbar .user-info { font-size: 0.9rem; opacity: 0.9; }
+        .btn-logout {
+            padding: 0.4rem 0.8rem;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: white;
+            background: #667eea;
+            transition: background 0.2s;
+        }
+        .btn-logout:hover { background: #5568d3; }
         .container { max-width: 1400px; margin: 2rem auto; padding: 0 2rem; }
         .tabs { display: flex; gap: 1rem; margin-bottom: 2rem; border-bottom: 2px solid #e0e0e0; }
         .tab { padding: 1rem 2rem; background: none; border: none; cursor: pointer; font-weight: 600; color: #666; border-bottom: 3px solid transparent; transition: all 0.3s; }
@@ -619,11 +665,11 @@ public class HomeController {
 </head>
 <body>
     <nav class="navbar">
-        <h1>👤 Panel Pracownika</h1>
-        <div class="user-info">
-            Zalogowany jako: <strong id="user-name">Pracownik</strong> | 
-            <a href="/" style="color: white; text-decoration: underline;">Wyloguj</a>
+        <div>
+            <h1 class="navbar-title">👤 Panel Pracownika</h1>
+            <div class="user-info">Zalogowany jako: <strong id="user-name">Pracownik</strong></div>
         </div>
+        <button class="btn-logout" onclick="logout()">Wyloguj</button>
     </nav>
 
     <div class="container">
@@ -721,6 +767,12 @@ public class HomeController {
         let user = null;
         let allTickets = [];
         
+        // ✅ global logout used by onclick on the button
+        function logout() {
+            sessionStorage.removeItem('user');
+            window.location.href = '/';
+        }
+
         window.onload = () => {
             const u = sessionStorage.getItem('user');
             if (!u) { window.location.href = '/'; return; }
@@ -912,9 +964,9 @@ public class HomeController {
     public String adminPanel() {
         return """
 <!DOCTYPE html>
-<html lang=\"pl\">
+<html lang="pl">
 <head>
-    <meta charset=\"UTF-8\">
+    <meta charset="UTF-8">
     <title>Panel administratora - Service Desk</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -928,8 +980,20 @@ public class HomeController {
             justify-content: space-between;
             align-items: center;
         }
-        .navbar h1 { font-size: 1.5rem; }
+        .navbar-title { font-size: 1.5rem; margin: 0; }
         .navbar .user-info { font-size: 0.9rem; opacity: 0.9; }
+        .btn-logout {
+            padding: 0.4rem 0.8rem;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: white;
+            background: #667eea;
+            transition: background 0.2s;
+        }
+        .btn-logout:hover { background: #5568d3; }
         .container { max-width: 1400px; margin: 2rem auto; padding: 0 2rem; }
         .section-title { font-size: 1.2rem; font-weight: 600; margin-bottom: 1rem; color: #333; }
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
@@ -1009,62 +1073,62 @@ public class HomeController {
     </style>
 </head>
 <body>
-<div class=\"navbar\">
+<div class="navbar">
     <div>
-        <h1>🔐 Panel administratora</h1>
-        <div class=\"user-info\" id=\"adminInfo\">Zalogowany jako: admin</div>
+        <h1 class="navbar-title">🔐 Panel administratora</h1>
+        <div class="user-info" id="adminInfo">Zalogowany jako: admin</div>
     </div>
-    <button class=\"btn btn-small\" onclick=\"logout()\">Wyloguj</button>
+    <button class="btn-logout" onclick="logout()">Wyloguj</button>
 </div>
 
-<div class=\"container\">
-    <div class=\"section-title\">Raporty systemowe</div>
-    <div class=\"stats-grid\">
-        <div class=\"stat-card\" id=\"statDept\">
+<div class="container">
+    <div class="section-title">Raporty systemowe</div>
+    <div class="stats-grid">
+        <div class="stat-card" id="statDept">
             <h3>Zgłoszenia wg działu</h3>
-            <div class=\"value\" id=\"statDeptCount\">-</div>
-            <div class=\"subtitle\">Suma otwartych i zamkniętych zgłoszeń w podziale na dział</div>
+            <div class="value" id="statDeptCount">-</div>
+            <div class="subtitle">Suma otwartych i zamkniętych zgłoszeń w podziale na dział</div>
         </div>
-        <div class=\"stat-card\" id=\"statTech\">
+        <div class="stat-card" id="statTech">
             <h3>Zgłoszenia wg technika</h3>
-            <div class=\"value\" id=\"statTechCount\">-</div>
-            <div class=\"subtitle\">Liczba zgłoszeń w systemie obsługiwanych przez techników</div>
+            <div class="value" id="statTechCount">-</div>
+            <div class="subtitle">Liczba zgłoszeń w systemie obsługiwanych przez techników</div>
         </div>
-        <div class=\"stat-card\" id=\"statAvg\">
+        <div class="stat-card" id="statAvg">
             <h3>Średni czas rozwiązania</h3>
-            <div class=\"value\" id=\"statAvgHours\">- h</div>
-            <div class=\"subtitle\">Na podstawie zgłoszeń z ustawioną datą zamknięcia</div>
+            <div class="value" id="statAvgHours">- h</div>
+            <div class="subtitle">Na podstawie zgłoszeń z ustawioną datą zamknięcia</div>
         </div>
     </div>
 
-    <div class=\"layout-grid\">
+    <div class="layout-grid">
         <div>
-            <div class=\"card\">
-                <div class=\"section-title\">Wszystkie zgłoszenia</div>
-                <div class=\"filters\">
+            <div class="card">
+                <div class="section-title">Wszystkie zgłoszenia</div>
+                <div class="filters">
                     <div>
-                        <label for=\"filterStatus\">Status:</label>
-                        <select id=\"filterStatus\">
-                            <option value=\"\">Wszystkie</option>
-                            <option value=\"OPEN\">Otwarte</option>
-                            <option value=\"IN_PROGRESS\">W realizacji</option>
-                            <option value=\"RESOLVED\">Rozwiązane</option>
-                            <option value=\"CLOSED\">Zamknięte</option>
+                        <label for="filterStatus">Status:</label>
+                        <select id="filterStatus">
+                            <option value="">Wszystkie</option>
+                            <option value="OPEN">Otwarte</option>
+                            <option value="IN_PROGRESS">W realizacji</option>
+                            <option value="RESOLVED">Rozwiązane</option>
+                            <option value="CLOSED">Zamknięte</option>
                         </select>
                     </div>
                     <div>
-                        <label for=\"filterDept\">Dział:</label>
-                        <select id=\"filterDept\">
-                            <option value=\"\">Wszystkie</option>
+                        <label for="filterDept">Dział:</label>
+                        <select id="filterDept">
+                            <option value="">Wszystkie</option>
                         </select>
                     </div>
                     <div>
-                        <label for=\"filterTech\">Technik:</label>
-                        <select id=\"filterTech\">
-                            <option value=\"\">Wszyscy</option>
+                        <label for="filterTech">Technik:</label>
+                        <select id="filterTech">
+                            <option value="">Wszyscy</option>
                         </select>
                     </div>
-                    <button class=\"btn\" onclick=\"loadTickets()\">Filtruj</button>
+                    <button class="btn" onclick="loadTickets()">Filtruj</button>
                 </div>
 
                 <table>
@@ -1080,22 +1144,22 @@ public class HomeController {
                         <th>Kategoria</th>
                     </tr>
                     </thead>
-                    <tbody id=\"ticketsTableBody\"></tbody>
+                    <tbody id="ticketsTableBody"></tbody>
                 </table>
             </div>
         </div>
 
         <div>
-            <div class=\"card dictionary-list\">
-                <div class=\"section-title\">Słowniki i użytkownicy</div>
+            <div class="card dictionary-list">
+                <div class="section-title">Słowniki i użytkownicy</div>
                 <h4>Użytkownicy</h4>
-                <ul id=\"usersList\"></ul>
+                <ul id="usersList"></ul>
                 <h4>Technicy</h4>
-                <ul id=\"techniciansList\"></ul>
+                <ul id="techniciansList"></ul>
                 <h4>Działy</h4>
-                <ul id=\"departmentsList\"></ul>
+                <ul id="departmentsList"></ul>
                 <h4>Kategorie</h4>
-                <ul id=\"categoriesList\"></ul>
+                <ul id="categoriesList"></ul>
             </div>
         </div>
     </div>
