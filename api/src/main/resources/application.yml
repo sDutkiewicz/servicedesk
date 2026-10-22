@@ -3,7 +3,9 @@ spring:
     name: servicedesk
 
   profiles:
-    active: postgres
+    # Profil demonstracyjny, zgodny z instrukcją uruchomienia w sprawozdaniu.
+    # Nie wymaga lokalnie zainstalowanego PostgreSQL.
+    active: h2
 
 ---
 # Konfiguracja H2 (profil: h2) - na potrzeby szybkiego developmentu / testów

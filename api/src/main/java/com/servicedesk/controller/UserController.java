@@ -5,6 +5,7 @@ import com.servicedesk.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 import java.util.List;
 
 @RestController @RequestMapping("/api/users") @RequiredArgsConstructor
@@ -12,7 +13,7 @@ public class UserController {
     private final UserRepository repo;
 
     @PostMapping @ResponseStatus(HttpStatus.CREATED)
-    public User create(@RequestBody User u){ return repo.save(u); }
+    public User create(@Valid @RequestBody User u){ return repo.save(u); }
 
     @GetMapping
     public List<User> all(){ return repo.findAll(); }
@@ -21,7 +22,7 @@ public class UserController {
     public User getById(@PathVariable Long id){ return repo.findById(id).orElseThrow(); }
 
     @PutMapping("/{id}")
-    public User update(@PathVariable Long id, @RequestBody User u){
+    public User update(@PathVariable Long id, @Valid @RequestBody User u){
         User existing = repo.findById(id).orElseThrow();
         existing.setFirstName(u.getFirstName());
         existing.setLastName(u.getLastName());

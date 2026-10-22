@@ -6,6 +6,7 @@ import com.servicedesk.service.TicketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 import java.util.List;
 
 @RestController @RequestMapping("/api/tickets") @RequiredArgsConstructor
@@ -14,11 +15,11 @@ public class TicketController {
 
     // F1
     @PostMapping @ResponseStatus(HttpStatus.CREATED)
-    public Ticket create(@RequestBody TicketCreateDto dto){ return service.create(dto); }
+    public Ticket create(@Valid @RequestBody TicketCreateDto dto){ return service.create(dto); }
 
     // F2
     @PostMapping("/{id}/assign")
-    public Ticket assign(@PathVariable Long id, @RequestBody TicketAssignDto dto){
+    public Ticket assign(@PathVariable Long id, @Valid @RequestBody TicketAssignDto dto){
         return service.assign(id, dto);
     }
 

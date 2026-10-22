@@ -30,8 +30,8 @@ public class HomeController {
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+            background: #202a33;
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -40,13 +40,14 @@ public class HomeController {
         .login-container {
             background: white;
             padding: 3rem;
-            border-radius: 15px;
+            border-radius: 4px;
             box-shadow: 0 10px 40px rgba(0,0,0,0.3);
             width: 400px;
         }
         h1 {
             text-align: center;
-            color: #667eea;
+            color: #365d79;
+            font-family: inherit;
             margin-bottom: 0.5rem;
             font-size: 2.5rem;
         }
@@ -74,12 +75,12 @@ public class HomeController {
         }
         input:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: #365d79;
         }
         button {
             width: 100%;
             padding: 1rem;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #365d79;
             color: white;
             border: none;
             border-radius: 8px;
@@ -111,7 +112,7 @@ public class HomeController {
             font-size: 0.85rem;
         }
         .accounts-info h3 {
-            color: #667eea;
+            color: #365d79;
             margin-bottom: 0.5rem;
             font-size: 0.9rem;
         }
@@ -236,9 +237,10 @@ public class HomeController {
     <title>Panel Technika - Service Desk</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f7fa; color: #333; }
+        body { font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; background: #f4f5f6; color: #202a33; }
         .navbar {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #202a33;
+            border-bottom: 3px solid #365d79;
             color: white;
             padding: 1rem 2rem;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
@@ -257,37 +259,37 @@ public class HomeController {
             font-size: 0.85rem;
             font-weight: 600;
             color: white;
-            background: #667eea;
+            background: #365d79;
             transition: background 0.2s, transform 0.2s;
         }
-        .btn-logout:hover { background: #5568d3; transform: translateY(-1px); }
+        .btn-logout:hover { background: #244a63; transform: translateY(-1px); }
         .container { max-width: 1400px; margin: 2rem auto; padding: 0 2rem; }
         .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
-        .stat-card { background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); text-align: center; }
+        .stat-card { background: white; padding: 1.5rem; border-radius: 2px; box-shadow: none; border: 1px solid #d9dee2; text-align: center; }
         .stat-card h3 { color: #999; font-size: 0.9rem; margin-bottom: 0.5rem; }
-        .stat-card .number { font-size: 2.5rem; font-weight: bold; color: #667eea; }
-        .filters { background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 2rem; display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; }
+        .stat-card .number { font-size: 2.5rem; font-weight: bold; color: #365d79; }
+        .filters { background: white; padding: 1.5rem; border-radius: 2px; box-shadow: none; border: 1px solid #d9dee2; margin-bottom: 2rem; display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; }
         .filters label { font-weight: 600; margin-right: 0.5rem; }
         .filters select { padding: 0.6rem; border: 2px solid #e0e0e0; border-radius: 5px; min-width: 150px; }
         .btn { padding: 0.6rem 1.2rem; border: none; border-radius: 5px; cursor: pointer; font-weight: 600; transition: all 0.3s; }
-        .btn-primary { background: #667eea; color: white; }
-        .btn-primary:hover { background: #5568d3; transform: translateY(-2px); }
+        .btn-primary { background: #365d79; color: white; }
+        .btn-primary:hover { background: #244a63; transform: translateY(-2px); }
         .btn-success { background: #4caf50; color: white; }
         .btn-warning { background: #ff9800; color: white; }
         .btn-danger { background: #f44336; color: white; }
         .btn-small { padding: 0.4rem 0.8rem; font-size: 0.85rem; }
         .tickets-grid { display: grid; gap: 1.5rem; }
-        .ticket-card { background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); border-left: 4px solid #667eea; transition: all 0.3s; }
-        .ticket-card:hover { transform: translateY(-3px); box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
+        .ticket-card { background: white; padding: 1.5rem; border-radius: 2px; box-shadow: none; border: 1px solid #d9dee2; border-left: 4px solid #7a8995; transition: border-color 0.2s; }
+        .ticket-card:hover { transform: none; border-color: #365d79; }
         .ticket-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem; }
         .ticket-title { font-size: 1.3rem; font-weight: 600; color: #333; }
         .ticket-badges { display: flex; gap: 0.5rem; }
         .badge { padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
-        .badge-open { background: #e3f2fd; color: #1976d2; }
+        .badge-open { background: #e2eaef; color: #315d78; }
         .badge-in-progress { background: #fff3e0; color: #f57c00; }
         .badge-resolved { background: #e8f5e9; color: #388e3c; }
         .badge-closed { background: #f3e5f5; color: #7b1fa2; }
-        .badge-low { background: #e3f2fd; color: #1976d2; }
+        .badge-low { background: #e2eaef; color: #315d78; }
         .badge-medium { background: #fff3e0; color: #f57c00; }
         .badge-high { background: #ffebee; color: #c62828; }
         .badge-critical { background: #fce4ec; color: #880e4f; }
@@ -295,16 +297,16 @@ public class HomeController {
         .ticket-actions { display: flex; gap: 0.5rem; margin-top: 1rem; flex-wrap: wrap; }
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; }
         .modal.active { display: flex; }
-        .modal-content { background: white; padding: 2rem; border-radius: 10px; max-width: 700px; width: 90%; max-height: 85vh; overflow-y: auto; }
+        .modal-content { background: white; padding: 2rem; border-radius: 2px; max-width: 700px; width: 90%; max-height: 85vh; overflow-y: auto; border: 1px solid #d9dee2; }
         .close { float: right; font-size: 1.5rem; cursor: pointer; color: #999; line-height: 1; }
         .close:hover { color: #333; }
         .form-group { margin-bottom: 1.5rem; }
         .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: #555; }
         .form-group textarea { width: 100%; padding: 0.8rem; border: 2px solid #e0e0e0; border-radius: 5px; font-family: inherit; resize: vertical; min-height: 100px; }
         .comments-section { margin-top: 2rem; padding-top: 1.5rem; border-top: 2px solid #eee; }
-        .comment { background: #f9f9f9; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; border-left: 3px solid #667eea; }
+        .comment { background: #edf0f2; padding: 1rem; border-radius: 2px; margin-bottom: 1rem; border-left: 3px solid #7a8995; }
         .comment-header { display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.9rem; }
-        .comment-author { font-weight: 600; color: #667eea; }
+        .comment-author { font-weight: 600; color: #315d78; }
         .comment-date { color: #999; }
         .loading, .empty { text-align: center; padding: 3rem; color: #999; }
         .detail-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin: 1.5rem 0; }
@@ -585,9 +587,10 @@ public class HomeController {
     <title>Panel Pracownika - Service Desk</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f7fa; color: #333; }
+        body { font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; background: #f4f5f6; color: #202a33; }
         .navbar {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #202a33;
+            border-bottom: 3px solid #365d79;
             color: white;
             padding: 1rem 2rem;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
@@ -605,56 +608,56 @@ public class HomeController {
             font-size: 0.85rem;
             font-weight: 600;
             color: white;
-            background: #667eea;
+            background: #365d79;
             transition: background 0.2s;
         }
-        .btn-logout:hover { background: #5568d3; }
+        .btn-logout:hover { background: #244a63; }
         .container { max-width: 1400px; margin: 2rem auto; padding: 0 2rem; }
         .tabs { display: flex; gap: 1rem; margin-bottom: 2rem; border-bottom: 2px solid #e0e0e0; }
         .tab { padding: 1rem 2rem; background: none; border: none; cursor: pointer; font-weight: 600; color: #666; border-bottom: 3px solid transparent; transition: all 0.3s; }
-        .tab.active { color: #667eea; border-bottom-color: #667eea; }
-        .tab:hover { color: #667eea; }
+        .tab.active { color: #365d79; border-bottom-color: #365d79; }
+        .tab:hover { color: #365d79; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
         .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
-        .stat-card { background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); text-align: center; }
+        .stat-card { background: white; padding: 1.5rem; border-radius: 2px; box-shadow: none; border: 1px solid #d9dee2; text-align: center; }
         .stat-card h3 { color: #999; font-size: 0.9rem; margin-bottom: 0.5rem; }
-        .stat-card .number { font-size: 2.5rem; font-weight: bold; color: #667eea; }
+        .stat-card .number { font-size: 2.5rem; font-weight: bold; color: #365d79; }
         .btn { padding: 0.6rem 1.2rem; border: none; border-radius: 5px; cursor: pointer; font-weight: 600; transition: all 0.3s; }
-        .btn-primary { background: #667eea; color: white; }
-        .btn-primary:hover { background: #5568d3; transform: translateY(-2px); }
+        .btn-primary { background: #365d79; color: white; }
+        .btn-primary:hover { background: #244a63; transform: translateY(-2px); }
         .btn-large { padding: 1rem 2rem; font-size: 1.1rem; }
-        .form-card { background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); max-width: 800px; }
+        .form-card { background: white; padding: 2rem; border-radius: 2px; box-shadow: none; border: 1px solid #d9dee2; max-width: 800px; }
         .form-group { margin-bottom: 1.5rem; }
         .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: #555; }
         .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 0.8rem; border: 2px solid #e0e0e0; border-radius: 5px; font-family: inherit; font-size: 1rem; }
         .form-group textarea { resize: vertical; min-height: 120px; }
         .form-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
         .tickets-grid { display: grid; gap: 1.5rem; }
-        .ticket-card { background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); border-left: 4px solid #667eea; cursor: pointer; transition: all 0.3s; }
-        .ticket-card:hover { transform: translateY(-3px); box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
+        .ticket-card { background: white; padding: 1.5rem; border-radius: 2px; box-shadow: none; border: 1px solid #d9dee2; border-left: 4px solid #7a8995; cursor: pointer; transition: border-color 0.2s; }
+        .ticket-card:hover { transform: none; border-color: #365d79; }
         .ticket-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem; }
         .ticket-title { font-size: 1.3rem; font-weight: 600; color: #333; }
         .ticket-badges { display: flex; gap: 0.5rem; }
         .badge { padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
-        .badge-open { background: #e3f2fd; color: #1976d2; }
+        .badge-open { background: #e2eaef; color: #315d78; }
         .badge-in-progress { background: #fff3e0; color: #f57c00; }
         .badge-resolved { background: #e8f5e9; color: #388e3c; }
         .badge-closed { background: #f3e5f5; color: #7b1fa2; }
-        .badge-low { background: #e3f2fd; color: #1976d2; }
+        .badge-low { background: #e2eaef; color: #315d78; }
         .badge-medium { background: #fff3e0; color: #f57c00; }
         .badge-high { background: #ffebee; color: #c62828; }
         .badge-critical { background: #fce4ec; color: #880e4f; }
         .ticket-info { display: flex; gap: 1.5rem; font-size: 0.9rem; color: #666; margin: 0.5rem 0; }
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; }
         .modal.active { display: flex; }
-        .modal-content { background: white; padding: 2rem; border-radius: 10px; max-width: 700px; width: 90%; max-height: 85vh; overflow-y: auto; }
+        .modal-content { background: white; padding: 2rem; border-radius: 2px; max-width: 700px; width: 90%; max-height: 85vh; overflow-y: auto; border: 1px solid #d9dee2; }
         .close { float: right; font-size: 1.5rem; cursor: pointer; color: #999; line-height: 1; }
         .close:hover { color: #333; }
         .comments-section { margin-top: 2rem; padding-top: 1.5rem; border-top: 2px solid #eee; }
-        .comment { background: #f9f9f9; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; border-left: 3px solid #667eea; }
+        .comment { background: #edf0f2; padding: 1rem; border-radius: 2px; margin-bottom: 1rem; border-left: 3px solid #7a8995; }
         .comment-header { display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.9rem; }
-        .comment-author { font-weight: 600; color: #667eea; }
+        .comment-author { font-weight: 600; color: #315d78; }
         .comment-date { color: #999; }
         .loading, .empty { text-align: center; padding: 3rem; color: #999; }
         .detail-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin: 1.5rem 0; }
@@ -970,9 +973,10 @@ public class HomeController {
     <title>Panel administratora - Service Desk</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f7fa; color: #333; }
+        body { font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; background: #f4f5f6; color: #202a33; }
         .navbar {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #202a33;
+            border-bottom: 3px solid #365d79;
             color: white;
             padding: 1rem 2rem;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
@@ -990,19 +994,19 @@ public class HomeController {
             font-size: 0.85rem;
             font-weight: 600;
             color: white;
-            background: #667eea;
+            background: #365d79;
             transition: background 0.2s;
         }
-        .btn-logout:hover { background: #5568d3; }
+        .btn-logout:hover { background: #244a63; }
         .container { max-width: 1400px; margin: 2rem auto; padding: 0 2rem; }
         .section-title { font-size: 1.2rem; font-weight: 600; margin-bottom: 1rem; color: #333; }
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
-        .stat-card { background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .stat-card { background: white; padding: 1.5rem; border-radius: 2px; box-shadow: none; border: 1px solid #d9dee2; }
         .stat-card h3 { font-size: 0.95rem; color: #777; margin-bottom: 0.5rem; }
-        .stat-card .value { font-size: 1.8rem; font-weight: 700; color: #667eea; }
+        .stat-card .value { font-size: 1.8rem; font-weight: 700; color: #365d79; }
         .stat-card .subtitle { font-size: 0.85rem; color: #999; margin-top: 0.5rem; }
         .layout-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; align-items: flex-start; }
-        .card { background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 2rem; }
+        .card { background: white; padding: 1.5rem; border-radius: 2px; box-shadow: none; border: 1px solid #d9dee2; margin-bottom: 2rem; }
         .filters { display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem; align-items: center; }
         .filters label { font-size: 0.9rem; font-weight: 600; color: #555; }
         .filters select, .filters input {
@@ -1032,13 +1036,13 @@ public class HomeController {
             font-weight: 600;
             color: white;
         }
-        .badge-status-open { background: #1976d2; }
-        .badge-status-inprogress { background: #fb8c00; }
-        .badge-status-resolved { background: #7cb342; }
+        .badge-status-open { background: #3d657e; }
+        .badge-status-inprogress { background: #a77336; }
+        .badge-status-resolved { background: #617d68; }
         .badge-status-closed { background: #757575; }
         .badge-priority-low { background: #9e9e9e; }
         .badge-priority-medium { background: #42a5f5; }
-        .badge-priority-high { background: #ef5350; }
+        .badge-priority-high { background: #a34636; }
         .badge-priority-critical { background: #b71c1c; }
         .pill {
             display: inline-block;
@@ -1062,10 +1066,10 @@ public class HomeController {
             font-size: 0.85rem;
             font-weight: 600;
             color: white;
-            background: #667eea;
+            background: #365d79;
             transition: background 0.2s;
         }
-        .btn:hover { background: #5568d3; }
+        .btn:hover { background: #244a63; }
         .btn-small { padding: 0.25rem 0.5rem; font-size: 0.75rem; }
         @media (max-width: 1024px) {
             .layout-grid { grid-template-columns: 1fr; }
